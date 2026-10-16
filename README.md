@@ -44,6 +44,23 @@ python report.py results --print --only t001
 
 One section per task: overall result, ratings, the justification, the requirement checklist with A/B results, findings with boxes and verifier notes, why a result was flagged, and where the two inspections disagreed.
 
+## Writing the feedback
+
+`feedback.py` helps with the short text that goes into a rating form's open-feedback box. It doesn't write the text. It gives the facts, checks the rules, and remembers which style you pick.
+
+```bash
+python feedback.py points results/t001.json            # verdict check: suggested verdict, deciding reasons, flags
+python feedback.py shapes results/t001.json            # three different shapes to write
+python feedback.py lint results/t001.json drafts.txt   # check drafts, one per line; exit code 1 on a problem
+python feedback.py log --task t001 --verdict B --size slightly --pair-type small_gap \
+    --shape gap_key_point --shown gap_key_point,gap_compare,gap_summary --text-file picked.txt
+python feedback.py pool                                # how often each shape was shown and picked
+```
+
+There are four verdicts: A is better, B is better, both good, both bad. `points` suggests one from the result: the pipeline's winner and strength, a confirmed major flaw in each image means both flawed, and a pair with no winner is both good or both bad. The kind of pair sets the sentence count (3 for a clear win, 2 when every win is slight and neither image has a confirmed major flaw).
+
+`lint` enforces the hard rules: only periods, commas, apostrophes and hyphens inside words, no comma before "and", no banned words (reads as, thanks to, weaker, barely, and others), no first person, the exact first line for the verdict, and the sentence order. `log` appends your pick to `feedback_history.jsonl`. A shape that was shown three times and never picked drops out of the pool, but a pool never goes below three shapes.
+
 ## Pipeline
 
 | Stage | Who | Sees | Output |
@@ -90,7 +107,9 @@ Stages 1 and 2 run their calls in parallel. A rejected major finding lowers that
 | `imaging.py` | resize, encode, box validation, crop |
 | `orchestrator.py` | CLI and pipeline |
 | `report.py` | turns a results folder into a readable Markdown report |
-| `tests/` | rules, agents, imaging, and mock end-to-end batch runs |
+| `feedback.py` | verdict check, shape pool, rule checker and pick log for the feedback text |
+| `feedback_history.jsonl` | the log of picked feedback (created by the first `log`) |
+| `tests/` | rules, agents, imaging, feedback helper, and mock end-to-end batch runs |
 
 ## Outputs (`results/`)
 
