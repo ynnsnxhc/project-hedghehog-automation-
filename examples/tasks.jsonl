@@ -1,0 +1,2 @@
+{"task_id": "demo_001", "prompt": "a kneeling badger fanning five cards in an outstretched paw", "image_a": "badger_a.png", "image_b": "badger_b.png", "axes": ["instruction_following", "visual_quality", "ai_artifacts"]}
+{"task_id": "demo_002", "prompt": "a kneeling badger fanning five cards, PS2-era game graphics", "image_a": "badger_a.png", "image_b": "badger_b.png", "axes": ["instruction_following", "visual_quality", "ai_artifacts", "ps2_style"]}
